@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Layout from '../../components/layout/layout';
 import myContext from '../../context/data/myContext';
 import { useAutoSave, DraftVersion } from '../../hooks/useAutoSave';
@@ -13,7 +14,7 @@ import {
   EmotionResult,
   WritingInsights,
 } from '../../services/aiService';
-import { publishPoem } from '../../services/poemService';
+import { publishPoem, updatePoem, fetchPoemById } from '../../services/poemService';
 
 // ─── Hover-aware button ───────────────────────────────────────────────────────
 
@@ -283,6 +284,10 @@ export default function WriterPage() {
   const { mode } = context;
   const isDark = mode === 'dark';
 
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get('edit');
+  const isEditMode = Boolean(editId);
+
   const { title, setTitle, content, setContent, versions, lastSaved, isSaving, saveVersion, restoreVersion, deleteVersion, clearDraft } = useAutoSave();
 
   const [emotion, setEmotion] = useState<EmotionResult>({ primary: 'neutral', score: 0, description: 'Thoughtful & balanced', color: '#7f8c8d', emoji: '✨' });
@@ -299,6 +304,21 @@ export default function WriterPage() {
   const [published, setPublished] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
+  const [editLoading, setEditLoading] = useState(false);
+
+  // ── Load poem for editing ──────────────────────────────────────────────────
+  useEffect(() => {
+    if (!editId) return;
+    setEditLoading(true);
+    fetchPoemById(editId).then(poem => {
+      if (poem) {
+        setTitle(poem.title);
+        setContent(poem.content);
+      }
+      setEditLoading(false);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editId]);
 
   // ── Analyze text whenever content changes ──────────────────────────────────
   useEffect(() => {
@@ -356,17 +376,21 @@ export default function WriterPage() {
     setPublishing(true);
     setPublishError(null);
     try {
-      await publishPoem(title || 'Untitled', content);
-      clearDraft();
+      if (isEditMode && editId) {
+        await updatePoem(editId, title || 'Untitled', content);
+      } else {
+        await publishPoem(title || 'Untitled', content);
+        clearDraft();
+      }
       setPublished(true);
       setTimeout(() => setPublished(false), 2500);
     } catch (err: any) {
-      setPublishError('Publish failed. Check your connection.');
+      setPublishError(isEditMode ? 'Update failed. Check your connection.' : 'Publish failed. Check your connection.');
       setTimeout(() => setPublishError(null), 3000);
     } finally {
       setPublishing(false);
     }
-  }, [title, content, publishing]);
+  }, [title, content, publishing, isEditMode, editId]);
 
   const handleClearConfirm = useCallback(() => {
     clearDraft();
@@ -398,14 +422,21 @@ export default function WriterPage() {
 
         {/* ── Top Bar ───────────────────────────────── */}
         <div className="max-w-6xl mx-auto mb-4 flex flex-wrap items-center gap-3">
-          <input
-            type="text"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            placeholder="Untitled Poem"
-            className="flex-1 min-w-0 text-xl font-bold bg-transparent border-b-2 outline-none py-1"
-            style={{ color: text, borderColor: inputBorder, fontFamily: 'Georgia, serif' }}
-          />
+          <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+            {isEditMode && (
+              <span style={{ color: sub, fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Editing poem
+              </span>
+            )}
+            <input
+              type="text"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              placeholder="Untitled Poem"
+              className="w-full text-xl font-bold bg-transparent border-b-2 outline-none py-1"
+              style={{ color: text, borderColor: inputBorder, fontFamily: 'Georgia, serif', opacity: editLoading ? 0.4 : 1 }}
+            />
+          </div>
 
           <div className="flex items-center gap-2 flex-wrap">
             <EmotionBadge emotion={emotion} />
@@ -461,13 +492,19 @@ export default function WriterPage() {
 
             <HoverBtn
               onClick={handlePublish}
-              disabled={!content.trim() || publishing}
+              disabled={!content.trim() || publishing || editLoading}
               bg={published ? '#16a34a' : publishError ? '#dc2626' : '#FFBF00'}
               hoverBg={published ? '#15803d' : publishError ? '#b91c1c' : '#e6ac00'}
               color={published || publishError ? '#fff' : '#291200'}
               className="px-4 py-1.5 rounded-lg text-xs font-bold"
             >
-              {publishing ? 'Publishing…' : published ? '✓ Published!' : publishError ? 'Failed — retry' : 'Publish Poem'}
+              {publishing
+                ? (isEditMode ? 'Saving…' : 'Publishing…')
+                : published
+                ? (isEditMode ? '✓ Saved!' : '✓ Published!')
+                : publishError
+                ? 'Failed — retry'
+                : isEditMode ? 'Save Changes' : 'Publish Poem'}
             </HoverBtn>
 
             <HoverBtn

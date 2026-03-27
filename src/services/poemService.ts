@@ -58,6 +58,20 @@ export async function publishPoem(title: string, content: string): Promise<Poem>
   return data;
 }
 
+// ── Update an existing poem ───────────────────────────────────────────────────
+
+export async function updatePoem(id: string, title: string, content: string): Promise<Poem> {
+  const { data, error } = await supabase
+    .from('poems')
+    .update({ title: title || 'Untitled', content })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
 // ── Delete a poem by ID ───────────────────────────────────────────────────────
 
 export async function deletePoem(id: string): Promise<void> {

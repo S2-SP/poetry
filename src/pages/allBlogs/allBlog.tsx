@@ -107,23 +107,38 @@ function PoemCard({
           <span className="text-xs mt-1" style={{ color: isDark ? '#94a3b8' : '#6b7280' }}>
             {new Date(poem.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
           </span>
-          {/* Delete button — admin only */}
+          {/* Edit + Delete — admin only */}
           {isAdmin && (
-            <button
-              onClick={() => onDeleteRequest(poem)}
-              className="mt-0.5 p-1.5 rounded-lg transition-colors"
-              title="Delete poem"
-              style={{ background: isDark ? '#7f1d1d33' : '#fee2e2', color: isDark ? '#fca5a5' : '#b91c1c' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = isDark ? '#7f1d1d88' : '#fecaca'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = isDark ? '#7f1d1d33' : '#fee2e2'; }}
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6l-1 14H6L5 6" />
-                <path d="M10 11v6M14 11v6" />
-                <path d="M9 6V4h6v2" />
-              </svg>
-            </button>
+            <>
+              <Link
+                to={`/writer?edit=${poem.id}`}
+                className="mt-0.5 p-1.5 rounded-lg transition-colors"
+                title="Edit poem"
+                style={{ background: isDark ? '#1e3a5f33' : '#dbeafe', color: isDark ? '#93c5fd' : '#1d4ed8' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = isDark ? '#1e3a5f88' : '#bfdbfe'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = isDark ? '#1e3a5f33' : '#dbeafe'; }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+              </Link>
+              <button
+                onClick={() => onDeleteRequest(poem)}
+                className="mt-0.5 p-1.5 rounded-lg transition-colors"
+                title="Delete poem"
+                style={{ background: isDark ? '#7f1d1d33' : '#fee2e2', color: isDark ? '#fca5a5' : '#b91c1c' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = isDark ? '#7f1d1d88' : '#fecaca'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = isDark ? '#7f1d1d33' : '#fee2e2'; }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14H6L5 6" />
+                  <path d="M10 11v6M14 11v6" />
+                  <path d="M9 6V4h6v2" />
+                </svg>
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -197,7 +212,7 @@ function AllBlog() {
   return (
     <Layout>
       <section style={{ minHeight: '80vh', background: isDark ? 'rgb(17, 34, 39)' : '#fffdf5' }}>
-        <div className="container px-5 py-10 mx-auto max-w-4xl">
+        <div className="container px-5 py-10 mx-auto max-w-7xl">
           <h1
             className="text-center text-3xl font-bold mb-8"
             style={{ color: isDark ? 'white' : 'rgb(30, 41, 59)', fontFamily: 'Georgia, serif' }}
@@ -244,7 +259,7 @@ function AllBlog() {
 
           {/* Grid */}
           {!loading && !error && poems.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {poems.map(poem => (
                 <PoemCard
                   key={poem.id}
