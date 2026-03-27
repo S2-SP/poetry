@@ -3,11 +3,135 @@ import myContext from '../../context/data/myContext';
 import { Typography, Navbar, IconButton, Collapse } from '@material-tailwind/react';
 import "./navbar.css";
 import { Link } from 'react-router-dom';
+import { useAdminAuth } from '../../hooks/useAdminAuth';
+
+// ─── Login Modal ──────────────────────────────────────────────────────────────
+
+function LoginModal({ onClose, isDark }: { onClose: () => void; isDark: boolean }) {
+  const { login } = useAdminAuth();
+  const [input, setInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(false);
+
+  const bg = isDark ? '#1e293b' : '#ffffff';
+  const border = isDark ? '#334155' : '#e5e7eb';
+  const text = isDark ? '#f1f5f9' : '#1f2937';
+  const sub = isDark ? '#94a3b8' : '#6b7280';
+  const inputBg = isDark ? '#0f172a' : '#f9fafb';
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = login(input);
+    if (success) {
+      onClose();
+    } else {
+      setError(true);
+      setInput('');
+      setTimeout(() => setError(false), 2500);
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{ background: 'rgba(0,0,0,0.6)' }}
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-sm mx-4 rounded-2xl shadow-2xl p-8 flex flex-col gap-5"
+        style={{ background: bg, border: `1px solid ${border}` }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="text-center">
+          <p style={{ fontSize: '2.2rem' }}>🔒</p>
+          <h2 className="text-xl font-bold mt-2" style={{ color: text, fontFamily: 'Georgia, serif' }}>
+            Admin Login
+          </h2>
+          <p className="text-sm mt-1" style={{ color: sub }}>
+            Enter your password to write and manage poems.
+          </p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              placeholder="Password"
+              autoFocus
+              className="w-full px-4 py-3 rounded-xl outline-none text-sm pr-10"
+              style={{
+                background: inputBg,
+                border: `1.5px solid ${error ? '#dc2626' : border}`,
+                color: text,
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(p => !p)}
+              className="absolute right-3 top-1/2 -translate-y-1/2"
+              style={{ color: sub }}
+            >
+              {showPassword ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" />
+                  <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
+            </button>
+          </div>
+
+          {error && (
+            <p className="text-xs text-center" style={{ color: '#dc2626' }}>
+              Incorrect password. Try again.
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={!input}
+            className="w-full py-3 rounded-xl text-sm font-bold disabled:opacity-40 transition-colors"
+            style={{ background: '#FFBF00', color: '#291200' }}
+            onMouseEnter={e => { if (input) (e.currentTarget as HTMLButtonElement).style.background = '#e6ac00'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FFBF00'; }}
+          >
+            Login
+          </button>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full py-2 rounded-xl text-sm font-semibold transition-colors"
+            style={{ background: isDark ? '#334155' : '#f3f4f6', color: text }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = isDark ? '#475569' : '#e5e7eb'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = isDark ? '#334155' : '#f3f4f6'; }}
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ─── Navbar ───────────────────────────────────────────────────────────────────
 
 const Nav: React.FC = () => {
   const [openNav, setOpenNav] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const context = useContext(myContext);
   const { mode, toggleMode } = context;
+  const { isAdmin, logout } = useAdminAuth();
+  const isDark = mode === 'dark';
 
   const navList = (
     <ul className='nav-container'>
@@ -21,20 +145,66 @@ const Nav: React.FC = () => {
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
       >
-        <Link to={'/allblogs'} className="link">Poems</Link>
+        <Link to={'/allBlogs'} className="link">Poems</Link>
       </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="typography"
-        style={{ color: 'white' }}
-        placeholder={undefined}
-        onPointerEnterCapture={undefined}
-        onPointerLeaveCapture={undefined}
-      >
-        <Link to={'/writer'} className="link">Write</Link>
-      </Typography>
+
+      {isAdmin && (
+        <Typography
+          as="li"
+          variant="small"
+          color="blue-gray"
+          className="typography"
+          style={{ color: 'white' }}
+          placeholder={undefined}
+          onPointerEnterCapture={undefined}
+          onPointerLeaveCapture={undefined}
+        >
+          <Link to={'/writer'} className="link">Write</Link>
+        </Typography>
+      )}
+
+      {/* Login / Logout */}
+      {isAdmin ? (
+        <Typography
+          as="li"
+          variant="small"
+          color="blue-gray"
+          className="typography"
+          placeholder={undefined}
+          onPointerEnterCapture={undefined}
+          onPointerLeaveCapture={undefined}
+        >
+          <button
+            onClick={logout}
+            className="link px-3 py-1 rounded-lg text-xs font-semibold transition-colors"
+            style={{ background: 'rgba(255,255,255,0.15)', color: 'white' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.28)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.15)'; }}
+          >
+            Logout
+          </button>
+        </Typography>
+      ) : (
+        <Typography
+          as="li"
+          variant="small"
+          color="blue-gray"
+          className="typography"
+          placeholder={undefined}
+          onPointerEnterCapture={undefined}
+          onPointerLeaveCapture={undefined}
+        >
+          <button
+            onClick={() => setShowLoginModal(true)}
+            className="link px-3 py-1 rounded-lg text-xs font-semibold transition-colors"
+            style={{ background: '#FFBF00', color: '#291200' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#e6ac00'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FFBF00'; }}
+          >
+            Login
+          </button>
+        </Typography>
+      )}
     </ul>
   );
 
@@ -42,7 +212,7 @@ const Nav: React.FC = () => {
     <>
       <Navbar
         className='sticky inset-0 z-20 h-max max-w-full border-none rounded-none py-2 px-4 lg:px-8 lg:py-2'
-        style={{ background: mode === 'dark' ? '#000000' : '#FFBF00' }}
+        style={{ background: isDark ? '#000000' : '#FFBF00' }}
         placeholder={undefined}
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
@@ -120,8 +290,12 @@ const Nav: React.FC = () => {
           {navList}
         </Collapse>
       </Navbar>
+
+      {showLoginModal && (
+        <LoginModal onClose={() => setShowLoginModal(false)} isDark={isDark} />
+      )}
     </>
-  )
+  );
 }
 
 export default Nav;

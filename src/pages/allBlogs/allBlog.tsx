@@ -3,6 +3,7 @@ import myContext from '../../context/data/myContext';
 import Layout from '../../components/layout/layout';
 import { Link } from 'react-router-dom';
 import { fetchPoems, deletePoem, Poem } from '../../services/poemService';
+import { useAdminAuth } from '../../hooks/useAdminAuth';
 
 // ─── Confirm Delete Modal ─────────────────────────────────────────────────────
 
@@ -73,10 +74,12 @@ function ConfirmDeleteModal({
 function PoemCard({
   poem,
   mode,
+  isAdmin,
   onDeleteRequest,
 }: {
   poem: Poem;
   mode: string;
+  isAdmin: boolean;
   onDeleteRequest: (poem: Poem) => void;
 }) {
   const isDark = mode === 'dark';
@@ -104,28 +107,30 @@ function PoemCard({
           <span className="text-xs mt-1" style={{ color: isDark ? '#94a3b8' : '#6b7280' }}>
             {new Date(poem.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
           </span>
-          {/* Delete button */}
-          <button
-            onClick={() => onDeleteRequest(poem)}
-            className="mt-0.5 p-1.5 rounded-lg transition-colors"
-            title="Delete poem"
-            style={{ background: isDark ? '#7f1d1d33' : '#fee2e2', color: isDark ? '#fca5a5' : '#b91c1c' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = isDark ? '#7f1d1d88' : '#fecaca'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = isDark ? '#7f1d1d33' : '#fee2e2'; }}
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="3 6 5 6 21 6" />
-              <path d="M19 6l-1 14H6L5 6" />
-              <path d="M10 11v6M14 11v6" />
-              <path d="M9 6V4h6v2" />
-            </svg>
-          </button>
+          {/* Delete button — admin only */}
+          {isAdmin && (
+            <button
+              onClick={() => onDeleteRequest(poem)}
+              className="mt-0.5 p-1.5 rounded-lg transition-colors"
+              title="Delete poem"
+              style={{ background: isDark ? '#7f1d1d33' : '#fee2e2', color: isDark ? '#fca5a5' : '#b91c1c' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = isDark ? '#7f1d1d88' : '#fecaca'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = isDark ? '#7f1d1d33' : '#fee2e2'; }}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14H6L5 6" />
+                <path d="M10 11v6M14 11v6" />
+                <path d="M9 6V4h6v2" />
+              </svg>
+            </button>
+          )}
         </div>
       </div>
 
       {/* Preview */}
       <pre
-        className="text-sm leading-relaxed whitespace-pre-wrap"
+        className="text-sm leading-relaxed whitespace-pre-wrap no-select"
         style={{ fontFamily: 'Georgia, serif', color: isDark ? 'rgb(203, 213, 225)' : 'rgb(51, 65, 85)' }}
       >
         {preview}{hasMore ? '\n…' : ''}
@@ -148,6 +153,7 @@ function AllBlog() {
   const context = useContext(myContext) as any;
   const { mode } = context;
   const isDark = mode === 'dark';
+  const { isAdmin } = useAdminAuth();
 
   const [poems, setPoems] = useState<Poem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -230,13 +236,15 @@ function AllBlog() {
               <p className="text-lg font-medium" style={{ color: sub }}>
                 No poems published yet.
               </p>
-              <Link
-                to="/writer"
-                className="px-5 py-2 rounded-xl text-sm font-semibold"
-                style={{ background: '#FFBF00', color: '#291200' }}
-              >
-                Write your first poem
-              </Link>
+              {isAdmin && (
+                <Link
+                  to="/writer"
+                  className="px-5 py-2 rounded-xl text-sm font-semibold"
+                  style={{ background: '#FFBF00', color: '#291200' }}
+                >
+                  Write your first poem
+                </Link>
+              )}
             </div>
           )}
 
@@ -248,6 +256,7 @@ function AllBlog() {
                   key={poem.id}
                   poem={poem}
                   mode={mode}
+                  isAdmin={isAdmin}
                   onDeleteRequest={setPendingDelete}
                 />
               ))}

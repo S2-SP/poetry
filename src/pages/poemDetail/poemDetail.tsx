@@ -55,7 +55,7 @@ export default function PoemDetail() {
                 {new Date(poem.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </p>
               <pre
-                className="text-lg leading-loose whitespace-pre-wrap"
+                className="text-lg leading-loose whitespace-pre-wrap no-select"
                 style={{ fontFamily: 'Georgia, serif', color: text }}
               >
                 {poem.content}

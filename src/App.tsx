@@ -5,13 +5,15 @@ import NoPage from './pages/noPage/noPage';
 import { Toaster } from 'react-hot-toast';
 import MyState from './context/data/myState';
 import Welcome from './pages/welcome/welcome';
-import WriterPage from './pages/writer/writer';
+import PasswordGate from './components/passwordGate/PasswordGate';
 import PoemDetail from './pages/poemDetail/poemDetail';
+import { AdminAuthProvider } from './context/adminAuth/adminAuthContext';
 
 
 export default function App() {
   return (
     <div>
+      <AdminAuthProvider>
       <MyState>
 
       <Router>
@@ -19,13 +21,13 @@ export default function App() {
         <Route path='/' element={<Welcome/>} />
           <Route path='/allBlogs' element={<AllBlog/>} />
           <Route path='/*' element={<NoPage/>} />
-          <Route path='/writer' element={<WriterPage/>} />
+          <Route path='/writer' element={<PasswordGate/>} />
           <Route path='/poem/:id' element={<PoemDetail/>} />
         </Routes>
         <Toaster/>
       </Router>
       </MyState>
-      
+      </AdminAuthProvider>
     </div>
   )
 }
