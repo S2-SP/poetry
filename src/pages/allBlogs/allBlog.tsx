@@ -138,8 +138,7 @@ function PoemCard({
 
       <Link
         to={`/poem/${poem.id}`}
-        className="self-start text-xs font-semibold px-3 py-1 rounded-full mt-1"
-        style={{ background: '#FFBF00', color: '#291200' }}
+        className="self-start text-xs font-semibold px-3 py-1 rounded-full mt-1 btn-gold"
       >
         Read Full Poem
       </Link>
@@ -221,8 +220,7 @@ function AllBlog() {
               <p style={{ color: sub }}>{error}</p>
               <button
                 onClick={loadPoems}
-                className="px-4 py-2 rounded-xl text-sm font-semibold"
-                style={{ background: '#FFBF00', color: '#291200' }}
+                className="px-4 py-2 rounded-xl text-sm font-semibold btn-gold"
               >
                 Retry
               </button>
@@ -237,11 +235,7 @@ function AllBlog() {
                 No poems published yet.
               </p>
               {isAdmin && (
-                <Link
-                  to="/writer"
-                  className="px-5 py-2 rounded-xl text-sm font-semibold"
-                  style={{ background: '#FFBF00', color: '#291200' }}
-                >
+                <Link to="/writer" className="px-5 py-2 rounded-xl text-sm font-semibold btn-gold">
                   Write your first poem
                 </Link>
               )}
@@ -264,6 +258,18 @@ function AllBlog() {
           )}
         </div>
       </section>
+
+      {/* FAB — admin only */}
+      {isAdmin && (
+        <Link
+          to="/writer"
+          className="fab fixed bottom-8 right-8 w-14 h-14 rounded-full flex items-center justify-center shadow-xl z-30 text-2xl font-bold"
+          style={{ background: '#FFBF00', color: '#291200' }}
+          title="Write a new poem"
+        >
+          +
+        </Link>
+      )}
 
       {/* Delete confirmation modal */}
       {pendingDelete && (

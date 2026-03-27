@@ -140,12 +140,11 @@ const Nav: React.FC = () => {
         variant='small'
         color='blue-gray'
         className='typography'
-        style={{ color: 'white' }}
         placeholder={undefined}
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
       >
-        <Link to={'/allBlogs'} className="link">Poems</Link>
+        <Link to={'/allBlogs'} className="nav-link" style={{ color: 'white' }}>Poems</Link>
       </Typography>
 
       {isAdmin && (
@@ -154,12 +153,11 @@ const Nav: React.FC = () => {
           variant="small"
           color="blue-gray"
           className="typography"
-          style={{ color: 'white' }}
           placeholder={undefined}
           onPointerEnterCapture={undefined}
           onPointerLeaveCapture={undefined}
         >
-          <Link to={'/writer'} className="link">Write</Link>
+          <Link to={'/writer'} className="nav-link" style={{ color: 'white' }}>Write</Link>
         </Typography>
       )}
 
@@ -174,15 +172,7 @@ const Nav: React.FC = () => {
           onPointerEnterCapture={undefined}
           onPointerLeaveCapture={undefined}
         >
-          <button
-            onClick={logout}
-            className="link px-3 py-1 rounded-lg text-xs font-semibold transition-colors"
-            style={{ background: 'rgba(255,255,255,0.15)', color: 'white' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.28)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.15)'; }}
-          >
-            Logout
-          </button>
+          <button onClick={logout} className="btn-nav-logout">Logout</button>
         </Typography>
       ) : (
         <Typography
@@ -194,15 +184,7 @@ const Nav: React.FC = () => {
           onPointerEnterCapture={undefined}
           onPointerLeaveCapture={undefined}
         >
-          <button
-            onClick={() => setShowLoginModal(true)}
-            className="link px-3 py-1 rounded-lg text-xs font-semibold transition-colors"
-            style={{ background: '#FFBF00', color: '#291200' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#e6ac00'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FFBF00'; }}
-          >
-            Login
-          </button>
+          <button onClick={() => setShowLoginModal(true)} className="btn-nav-login">Login</button>
         </Typography>
       )}
     </ul>

@@ -13,3 +13,81 @@ body, button, input, textarea, select {
   user-select: none;
   -webkit-touch-callout: none;
 }
+
+/* ── Hover utilities (CSS :hover is more reliable than JS handlers) ── */
+
+/* Gold primary button */
+.btn-gold {
+  background: #FFBF00;
+  color: #291200;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.btn-gold:hover {
+  background: #e6ac00;
+}
+.btn-gold:active {
+  transform: scale(0.97);
+}
+
+/* Outlined / ghost button */
+.btn-outline {
+  transition: background 0.15s ease;
+}
+.btn-outline:hover {
+  background: rgba(255, 191, 0, 0.12) !important;
+}
+
+/* Danger button */
+.btn-danger {
+  transition: background 0.15s ease;
+}
+.btn-danger:hover {
+  filter: brightness(0.88);
+}
+
+/* Navbar links */
+.nav-link {
+  transition: opacity 0.15s ease;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+.nav-link:hover {
+  opacity: 0.72;
+}
+
+/* Navbar Login button */
+.btn-nav-login {
+  background: #FFBF00;
+  color: #291200;
+  transition: background 0.15s ease;
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.btn-nav-login:hover {
+  background: #e6ac00;
+}
+
+/* Navbar Logout button */
+.btn-nav-logout {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  transition: background 0.15s ease;
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.btn-nav-logout:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Floating action button */
+.fab {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+}
