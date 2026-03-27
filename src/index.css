@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* Global font — Georgia serif across all pages */
+body, button, input, textarea, select {
+  font-family: Georgia, 'Times New Roman', serif;
+}
