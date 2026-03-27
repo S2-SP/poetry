@@ -65,11 +65,11 @@ export async function updatePoem(id: string, title: string, content: string): Pr
     .from('poems')
     .update({ title: title || 'Untitled', content })
     .eq('id', id)
-    .select()
-    .single();
+    .select();
 
   if (error) throw new Error(error.message);
-  return data;
+  if (!data || data.length === 0) throw new Error('Poem not found or update not permitted.');
+  return data[0];
 }
 
 // ── Delete a poem by ID ───────────────────────────────────────────────────────
