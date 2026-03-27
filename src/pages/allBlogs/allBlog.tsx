@@ -254,22 +254,45 @@ function AllBlog() {
                   onDeleteRequest={setPendingDelete}
                 />
               ))}
+
+              {/* Add new poem card — admin only */}
+              {isAdmin && (
+                <Link
+                  to="/writer"
+                  title="Write a new poem"
+                  className="rounded-2xl flex items-center justify-center min-h-48 transition-all duration-200"
+                  style={{
+                    border: `2px dashed ${isDark ? '#334155' : '#d1d5db'}`,
+                    background: 'transparent',
+                  }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLAnchorElement).style.borderColor = '#FFBF00';
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLAnchorElement).style.borderColor = isDark ? '#334155' : '#d1d5db';
+                  }}
+                >
+                  <div
+                    className="flex items-center justify-center"
+                    style={{
+                      width: '52px',
+                      height: '52px',
+                      borderRadius: '50%',
+                      border: `2px solid ${isDark ? '#475569' : '#9ca3af'}`,
+                      color: isDark ? '#64748b' : '#9ca3af',
+                      fontSize: '1.75rem',
+                      lineHeight: 1,
+                      paddingBottom: '2px',
+                    }}
+                  >
+                    +
+                  </div>
+                </Link>
+              )}
             </div>
           )}
         </div>
       </section>
-
-      {/* FAB — admin only */}
-      {isAdmin && (
-        <Link
-          to="/writer"
-          className="fab fixed bottom-8 right-8 w-14 h-14 rounded-full flex items-center justify-center shadow-xl z-30 text-2xl font-bold"
-          style={{ background: '#FFBF00', color: '#291200' }}
-          title="Write a new poem"
-        >
-          +
-        </Link>
-      )}
 
       {/* Delete confirmation modal */}
       {pendingDelete && (

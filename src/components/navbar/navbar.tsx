@@ -144,7 +144,7 @@ const Nav: React.FC = () => {
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
       >
-        <Link to={'/allBlogs'} className="nav-link" style={{ color: 'white' }}>Poems</Link>
+        <Link to={'/allBlogs'} className="nav-link">Poems</Link>
       </Typography>
 
       {isAdmin && (
@@ -157,7 +157,7 @@ const Nav: React.FC = () => {
           onPointerEnterCapture={undefined}
           onPointerLeaveCapture={undefined}
         >
-          <Link to={'/writer'} className="nav-link" style={{ color: 'white' }}>Write</Link>
+          <Link to={'/writer'} className="nav-link">Write</Link>
         </Typography>
       )}
 

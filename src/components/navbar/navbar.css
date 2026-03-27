@@ -1,52 +1,75 @@
 @import 'tailwindcss';
 
 .nav-container {
-    margin-bottom: 1rem;  /* mb-4 */
-    margin-top: 0.5rem;   /* mt-2 */
-    display: flex; 
-    flex-direction: column; /* flex-col */
-    gap: 0.5rem; /* gap-2 */
-  }
-  
-  /* Large screens (lg) */
-  @media (min-width: 1024px) {
-    .nav-container {
-      margin-bottom: 0;  /* lg:mb-0 */
-      margin-top: 0;  /* lg:mt-0 */
-      flex-direction: row; /* lg:flex-row */
-      align-items: center; /* lg:items-center */
-      gap: 1.5rem; /* lg:gap-6 */
-    }
-  }
-  
-  .typography{
-        padding: 0.25rem;  /* p-1 (4px) */
-        font-weight: 400;  /* font-normal */
-  }
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
 
-  .link{
-    display: flex;
-    align-items: center;
-  }
+.typography {
+  padding: 0;
+  font-weight: 400;
+  list-style: none;
+}
 
+/* Base nav item — links and buttons share the same style */
+.nav-link,
+.btn-nav-login,
+.btn-nav-logout {
+  display: inline-flex;
+  align-items: center;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.875rem;    /* text-sm */
+  font-weight: 600;
+  text-transform: capitalize;
+  color: white !important;
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+}
+
+/* Hover — white border for all items */
+.nav-link:hover,
+.btn-nav-login:hover,
+.btn-nav-logout:hover {
+  border-color: white;
+  background: transparent;
+  opacity: 1;
+}
+
+/* Mobile: stack vertically with a bit more space */
+@media (max-width: 1023px) {
+  .nav-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.nav {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  height: max-content;
+  max-width: 100%;
+  border: none;
+  border-radius: 0;
+  padding: 0.5rem 1rem;
+}
+
+@media (min-width: 1024px) {
   .nav {
-    position: sticky;  /* sticky */
-    top: 0;            /* inset-0 (for top, bottom, left, and right) */
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 20;       /* z-20 */
-    height: max-content; /* h-max */
-    max-width: 100%;   /* max-w-full */
-    border: none;      /* border-none */
-    border-radius: 0;  /* rounded-none */
-    padding: 0.5rem 1rem; /* py-2 px-4 (8px 16px) */
+    padding: 0.5rem 2rem;
   }
-  
-  /* Large screens (lg) */
-  @media (min-width: 1024px) {
-    .nav {
-      padding: 0.5rem 2rem; /* lg:px-8 lg:py-2 (8px 32px) */
-    }
-  }
-  
+}
