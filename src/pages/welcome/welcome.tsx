@@ -1,4 +1,4 @@
-import backgroundImage from "./../../assets/backgroundImage.png";
+import backgroundImage from "./../../assets/backgroundImage.jpg";
 import { useNavigate } from 'react-router-dom';
 
 function Welcome() {
