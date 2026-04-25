@@ -14,7 +14,7 @@ function Footer() {
           <span className=" text-xl text-white">Gallery of words</span>
         </div>
         <p className='text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4'>
-          <span className='text-white ml-1'>© 2026 @sefrina-poems</span>
+          <span className='text-white ml-1'> sefrina_pradhan © 2026 </span>
         </p>
         <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
           {/* Instagram */}
