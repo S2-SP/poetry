@@ -1,43 +1,28 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
-
-const SESSION_KEY = 'poetry_admin_auth';
-const CORRECT_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD ?? '';
-
-function isAuthenticated(): boolean {
-  return sessionStorage.getItem(SESSION_KEY) === CORRECT_PASSWORD && CORRECT_PASSWORD !== '';
-}
+import { createContext, useContext, ReactNode } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface AdminAuthContextType {
   isAdmin: boolean;
-  login: (password: string) => boolean;
+  login: () => void;
   logout: () => void;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType>({
   isAdmin: false,
-  login: () => false,
+  login: () => {},
   logout: () => {},
 });
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
-  const [isAdmin, setIsAdmin] = useState<boolean>(isAuthenticated);
+  const { isAuthenticated, loginWithRedirect, logout: auth0Logout, user } = useAuth0();
 
-  const login = (password: string): boolean => {
-    if (password === CORRECT_PASSWORD && CORRECT_PASSWORD !== '') {
-      sessionStorage.setItem(SESSION_KEY, password);
-      setIsAdmin(true);
-      return true;
-    }
-    return false;
-  };
+  const login = () => loginWithRedirect();
+  const logout = () => auth0Logout({ logoutParams: { returnTo: window.location.origin } });
 
-  const logout = () => {
-    sessionStorage.removeItem(SESSION_KEY);
-    setIsAdmin(false);
-  };
+  console.log(isAuthenticated, user);
 
   return (
-    <AdminAuthContext.Provider value={{ isAdmin, login, logout }}>
+    <AdminAuthContext.Provider value={{ isAdmin: isAuthenticated, login, logout }}>
       {children}
     </AdminAuthContext.Provider>
   );

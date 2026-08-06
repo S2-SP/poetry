@@ -8,11 +8,13 @@ import Welcome from './pages/welcome/welcome';
 import PasswordGate from './components/passwordGate/PasswordGate';
 import PoemDetail from './pages/poemDetail/poemDetail';
 import { AdminAuthProvider } from './context/adminAuth/adminAuthContext';
+import { Auth0ProviderWithNavigate } from './auth/Auth0ProviderWithNavigate';
 
 
 export default function App() {
   return (
     <div>
+      <Auth0ProviderWithNavigate>
       <AdminAuthProvider>
       <MyState>
 
@@ -28,6 +30,7 @@ export default function App() {
       </Router>
       </MyState>
       </AdminAuthProvider>
+      </Auth0ProviderWithNavigate>
     </div>
   )
 }
